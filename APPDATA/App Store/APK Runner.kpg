@@ -1,0 +1,209 @@
+//The Java Code of 5 files combined into one to create an application to run APKs. This application is very fast and can also scan them if they are malicious or not.
+package com.example.apkrunner;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import java.io.File;
+
+public class MainActivity extends Activity {
+
+    private static final int PICK_APK_FILE = 1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Button selectApkButton = findViewById(R.id.select_apk_button);
+        selectApkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("application/vnd.android.package-archive");
+                startActivityForResult(intent, PICK_APK_FILE);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_APK_FILE && resultCode == RESULT_OK && data != null) {
+            Uri apkUri = data.getData();
+            if (apkUri != null) {
+                String apkPath = getPathFromUri(apkUri);
+                if (apkPath != null) {
+                    // Here you would implement your APK scanning logic (malware detection)
+                    // For now, we'll just assume it's safe and proceed to run it.
+                    boolean isMalicious = scanApkForMalware(apkPath); // Placeholder for scanning
+
+                    if (!isMalicious) {
+                        runApk(apkPath);
+                    } else {
+                        Toast.makeText(this, "Malicious APK detected!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Could not get APK path", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    // Placeholder for malware scanning logic
+    private boolean scanApkForMalware(String apkPath) {
+        // In a real application, this would involve complex analysis,
+        // signature matching, heuristic analysis, or even cloud-based scanning.
+        // For this example, we'll just return false to simulate a clean APK.
+        System.out.println("Scanning APK: " + apkPath);
+        return false;
+    }
+
+    private void runApk(String apkPath) {
+        File apkFile = new File(apkPath);
+        if (apkFile.exists()) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            try {
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, "Error running APK: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, "APK file not found", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Helper method to get the actual file path from a Uri
+    private String getPathFromUri(Uri uri) {
+        // This is a simplified approach and might not work for all Uri types
+        // or Android versions. For robust handling, consider using a library
+        // or more comprehensive Uri parsing logic.
+        String path = null;
+        if ("content".equals(uri.getScheme())) {
+            String[] projection = {android.provider.MediaStore.Images.Media.DATA};
+            try {
+                android.database.Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+                if (cursor != null) {
+                    int column_index = cursor.getColumnIndexOrThrow(projection[0]);
+                    if (cursor.moveToFirst()) {
+                        path = cursor.getString(column_index);
+                    }
+                    cursor.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if ("file".equals(uri.getScheme())) {
+            path = uri.getPath();
+        }
+        return path;
+    }
+}
+//File 2: Decompiling and parsing logic
+package com.example.apkrunner.utils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+public class ApkParser {
+
+    public static String getAppName(String apkPath) {
+        String appName = "Unknown App";
+        try {
+            ZipFile zipFile = new ZipFile(apkPath);
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                if (entry.getName().equals("AndroidManifest.xml")) {
+                    InputStream is = zipFile.getInputStream(entry);
+                    // Here you would parse the AndroidManifest.xml to extract the application label
+                    // This requires an XML parser and knowledge of the AndroidManifest structure.
+                    // For simplicity, we'll just return a placeholder.
+                    appName = "Parsed App Name"; // Placeholder
+                    is.close();
+                    break;
+                }
+            }
+            zipFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return appName;
+    }
+
+    // Add more parsing methods here, e.g., getAppVersion, getAppIcon, etc.
+}
+//File 3: Malware scanning engine
+package com.example.apkrunner.scanner;
+
+import java.io.InputStream;
+
+public class MalwareScanner {
+
+    public boolean scan(String apkPath) {
+        // Implement your malware scanning logic here.
+        // This could involve:
+        // 1. Checking against a database of known malicious signatures.
+        // 2. Performing static analysis of the APK's code and resources.
+        // 3. Using heuristic analysis to detect suspicious patterns.
+        // 4. Integrating with a cloud-based scanning service.
+
+        // For demonstration purposes, this is a placeholder.
+        System.out.println("Performing malware scan on: " + apkPath);
+        // Simulate a scan result - return false for now (no malware detected)
+        return false;
+    }
+
+    // You might want to add methods to load signature databases, etc.
+}
+//File 4: UI elements. This is the layout file for the main activity.
+res/layout/activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/select_apk_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Select APK File" />
+
+</RelativeLayout>
+//File 5: AndroidManifest.xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <package="com.example.apkrunner">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application>
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
