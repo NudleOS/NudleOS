@@ -44,17 +44,10 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-    # Drawing
     draw_sky()
     draw_sun()
     draw_clouds()
     draw_ground()
-
-    # Update the display
     pygame.display.flip()
-
-    # Cap the frame rate
     clock.tick(60)
-
 pygame.quit()

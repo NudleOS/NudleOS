@@ -1,5 +1,3 @@
-#The python script to become a complex calculator. This can be compiled into a .bin file to be ready to be used. It is also graphical, and has colored TTK buttons. When it is run, it writes the log to calculatorsystem.log
-
 import tkinter as tk
 from tkinter import ttk
 import logging

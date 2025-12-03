@@ -1,40 +1,27 @@
-#We will install the apache2.kpg KLP package over the internet and activate it so you can setup an Apache Web Server at home.
 import os
 import subprocess
 
 def install_apache():
     try:
-        # Update package list
         subprocess.run(["sudo", "apt-get", "update", "-y"], check=True)
-        
-        # Install Apache2
         subprocess.run(["sudo", "apt-get", "install", "apache2", "-y"], check=True)
-        
-        # Enable Apache2 service
         subprocess.run(["sudo", "systemctl", "enable", "apache2"], check=True)
-        
-        # Start Apache2 service
         subprocess.run(["sudo", "systemctl", "start", "apache2"], check=True)
-        
         print("Apache2 installed successfully!")
-        
     except subprocess.CalledProcessError as e:
         print(f"Error installing Apache2: {e}")
     except FileNotFoundError:
         print("Error: apt-get command not found. Please make sure it is installed.")
-
 if __name__ == "__main__":
     install_apache()
 def configure_firewall():
     try:
-        # Allow HTTP traffic
         subprocess.run(["sudo", "ufw", "allow", "Apache"], check=True)
         print("Firewall configured to allow Apache traffic.")
     except subprocess.CalledProcessError as e:
         print(f"Error configuring firewall: {e}")
     except FileNotFoundError:
         print("Error: ufw command not found. Please make sure it is installed and enabled.")
-
 if __name__ == "__main__":
     install_apache()
     configure_firewall()
@@ -48,7 +35,6 @@ def check_apache_status():
         print(e.stderr)
     except FileNotFoundError:
         print("Error: systemctl command not found. Please make sure it is installed.")
-
 if __name__ == "__main__":
     install_apache()
     configure_firewall()
@@ -61,7 +47,6 @@ def restart_apache():
         print(f"Error restarting Apache2: {e}")
     except FileNotFoundError:
         print("Error: systemctl command not found. Please make sure it is installed.")
-
 if __name__ == "__main__":
     install_apache()
     configure_firewall()
@@ -75,7 +60,6 @@ def stop_apache():
         print(f"Error stopping Apache2: {e}")
     except FileNotFoundError:
         print("Error: systemctl command not found. Please make sure it is installed.")
-
 if __name__ == "__main__":
     install_apache()
     configure_firewall()
@@ -90,7 +74,6 @@ def start_apache():
         print(f"Error starting Apache2: {e}")
     except FileNotFoundError:
         print("Error: systemctl command not found. Please make sure it is installed.")
-
 if __name__ == "__main__":
     install_apache()
     configure_firewall()
@@ -123,7 +106,6 @@ def enable_apache():
         print(f"Error enabling Apache2: {e}")
     except FileNotFoundError:
         print("Error: systemctl command not found. Please make sure it is installed.")
-
 if __name__ == "__main__":
     install_apache()
     configure_firewall()
@@ -135,22 +117,14 @@ if __name__ == "__main__":
     enable_apache()
 def uninstall_apache():
     try:
-        # Stop Apache2 service
         subprocess.run(["sudo", "systemctl", "stop", "apache2"], check=True)
-        
-        # Remove Apache2 package
         subprocess.run(["sudo", "apt-get", "remove", "apache2", "-y"], check=True)
-        
-        # Autoremove unused packages
         subprocess.run(["sudo", "apt-get", "autoremove", "-y"], check=True)
-        
         print("Apache2 uninstalled successfully!")
-        
     except subprocess.CalledProcessError as e:
         print(f"Error uninstalling Apache2: {e}")
     except FileNotFoundError:
         print("Error: apt-get or systemctl command not found. Please make sure they are installed.")
-
 if __name__ == "__main__":
     install_apache()
     configure_firewall()
@@ -161,4 +135,3 @@ if __name__ == "__main__":
     disable_apache()
     enable_apache()
     uninstall_apache()
-#end

@@ -1,6 +1,5 @@
 import pygame
 GRAVITY = 0.1
-
 import math
 pygame.init()
 SCREEN_WIDTH = 800
@@ -37,13 +36,10 @@ while running:
     screen.fill(BLACK)
     nose_x = plane_x + 20 * math.cos(math.radians(plane_angle))
     nose_y = plane_y - 20 * math.sin(math.radians(plane_angle))
-
     wing1_x = plane_x - 15 * math.cos(math.radians(plane_angle + 90))
     wing1_y = plane_y + 15 * math.sin(math.radians(plane_angle + 90))
-
     wing2_x = plane_x - 15 * math.cos(math.radians(plane_angle - 90))
     wing2_y = plane_y + 15 * math.sin(math.radians(plane_angle - 90))
-
     pygame.draw.polygon(screen, RED, [(nose_x, nose_y), (wing1_x, wing1_y), (wing2_x, wing2_y)])
     pygame.display.flip()
 pygame.quit()

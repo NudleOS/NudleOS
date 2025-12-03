@@ -1,4 +1,3 @@
-#The python app where you can customize the terminal by right clicking on the taskbar icon (In NudleOS this will work, on Windows/Linux it won't)
 import tkinter as tk
 from tkinter import colorchooser, font
 
