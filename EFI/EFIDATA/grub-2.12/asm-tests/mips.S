@@ -1,4 +1,4 @@
-/* on mips clang doesn't support privilegied instructions, doubleword store/load
+/* on mips clang doesnt support privilegied instructions, doubleword store/load
    and crashes with hand-written assembly
  */
 
