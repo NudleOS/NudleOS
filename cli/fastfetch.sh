@@ -1,15 +1,10 @@
-#The script to do fastfetch (it prints a ascii representation of nudleos, and imports hardware and prints it).
-
-# Define colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 MAGENTA='\033[0;35m'
 CYAN='\033[0;36m'
-NC='\033[0m' # No Color
-
-# Function to display NudleOS ASCII art
+NC='\033[0m'
 nudleos_ascii() {
     cat << "EOF"
 ${BLUE}
@@ -21,8 +16,6 @@ ${BLUE}
 ${NC}
 EOF
 }
-
-# Gather system information
 OS=$(grep PRETTY_NAME /etc/os-release | cut -d'=' -f2 | tr -d '"')
 KERNEL=$(uname -r)
 UPTIME=$(uptime -p | sed 's/up //g')
@@ -32,11 +25,8 @@ RESOLUTION=$(xdpyinfo | grep dimensions | awk '{print $2}') # Requires xdpyinfo
 CPU=$(grep "model name" /proc/cpuinfo | head -n 1 | cut -d':' -f2 | sed 's/^ *//')
 GPU=$(lspci | grep -i vga | cut -d':' -f3 | sed 's/^ *//')
 MEMORY=$(free -h | awk '/Mem:/ {print $3 "/" $2}')
-
-# Display information
 clear
 nudleos_ascii
-
 echo -e " ${GREEN}NudleOS${NC}"
 echo -e " ${BLUE}--------------------${NC}"
 echo -e " ${YELLOW}OS:${NC}         $OS"
@@ -51,15 +41,12 @@ echo -e " ${YELLOW}Memory:${NC}     $MEMORY"
 echo -e " ${BLUE}--------------------${NC}"
 echo
 EOF
-# Check if xdpyinfo is installed, if not, try to get resolution differently
 if ! command -v xdpyinfo &> /dev/null
 then
     RESOLUTION="N/A (xdpyinfo not found)"
 else
     RESOLUTION=$(xdpyinfo | grep dimensions | awk '{print $2}')
 fi
-
-# Check for package manager and count packages accordingly
 if command -v dpkg &> /dev/null; then
     PACKAGES=$(dpkg -l | grep ^ii | wc -l)
     PKG_MANAGER="dpkg"
@@ -73,8 +60,6 @@ else
     PACKAGES="N/A"
     PKG_MANAGER="Unknown"
 fi
-
-# Gather system information
 OS=$(grep PRETTY_NAME /etc/os-release | cut -d'=' -f2 | tr -d '"')
 KERNEL=$(uname -r)
 UPTIME=$(uptime -p | sed 's/up //g')
@@ -82,11 +67,8 @@ SHELL=$(basename "$SHELL")
 CPU=$(grep "model name" /proc/cpuinfo | head -n 1 | cut -d':' -f2 | sed 's/^ *//')
 GPU=$(lspci | grep -i vga | cut -d':' -f3 | sed 's/^ *//')
 MEMORY=$(free -h | awk '/Mem:/ {print $3 "/" $2}')
-
-# Display information
 clear
 nudleos_ascii
-
 echo -e " ${GREEN}NudleOS${NC}"
 echo -e " ${BLUE}--------------------${NC}"
 echo -e " ${YELLOW}OS:${NC}         $OS"
@@ -99,4 +81,3 @@ echo -e " ${YELLOW}CPU:${NC}        $CPU"
 echo -e " ${YELLOW}GPU:${NC}        $GPU"
 echo -e " ${YELLOW}Memory:${NC}     $MEMORY"
 echo -e " ${BLUE}--------------------${NC}"
-echo
